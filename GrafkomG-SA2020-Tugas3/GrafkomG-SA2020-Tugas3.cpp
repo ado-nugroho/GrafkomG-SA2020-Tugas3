@@ -1,20 +1,69 @@
-// GrafkomG-SA2020-Tugas3.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
 
 #include <iostream>
+#include <GL/glut.h>
 
-int main()
-{
-    std::cout << "Hello World!\n";
+using namespace std;
+
+char huruf[100];
+int indx, mX = 0, mY = 0;
+void display() {
+	glClear(GL_COLOR_BUFFER_BIT);
+	glFlush();
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
+void output() {
+	system("cls");
+	cout << "MouseX: " << mX << " | " << "MouseY: " << mY << endl;
+	for (auto i : huruf) {
+		if (i > 0)
+			cout << char(i) << ' ';
+	}
+}
 
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
+void pencet(unsigned char key, int x, int y) {
+	int size = sizeof(huruf) / sizeof(huruf[0]);
+	auto cek = find(huruf, huruf + size, key);
+	if (cek == end(huruf)) {
+		huruf[indx] = key;
+		indx++;
+	}
+	output();
+}
+
+void lepas(unsigned char key, int x, int y) {
+	int size = sizeof(huruf) / sizeof(huruf[0]);
+	auto cek = find(huruf, huruf + size, key);
+	if (cek != end(huruf)) {
+		huruf[distance(huruf, cek)] = 0;
+	}
+	output();
+}
+
+void mouse(int x, int y) {
+	mX = x;
+	mY = y;
+	output();
+}
+void myinit() {
+	glClearColor(1.0, 1.0, 1.0, 1.0);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluOrtho2D(0.0, 1.0, 0.0, 1.0);
+}
+
+int main(int argc, char** argv) {
+	glutInit(&argc, argv);
+	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+	glutInitWindowSize(10, 10);
+	glutInitWindowPosition(0, 0);
+	glutCreateWindow(" ");
+	glutDisplayFunc(display);
+	glutMotionFunc(mouse);
+	glutKeyboardUpFunc(lepas);
+	glutKeyboardFunc(pencet);
+
+	myinit();
+	glutMainLoop();
+
+	return 0;
+}
